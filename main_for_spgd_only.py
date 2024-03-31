@@ -22,36 +22,7 @@ from optimizeFunc import lr_SPGD
 from itertools import combinations
 
 
-def random_data_img_generate(pro, E_mode, mode_count, epoch=0, Nx=256, Ny=256):
-    _a = torch.rand(size=(mode_count, 1))
-    _a = _a / torch.sqrt(torch.sum(torch.pow(_a, 2)))
-    _fhi = torch.rand(size=(mode_count, 1)) * 2 * torch.pi
-    _complex = _a * torch.exp(1j * _fhi)
 
-    E_output = torch.zeros(size=(Nx, Ny), device='cuda')
-
-    for i in range(mode_count):
-        E_output = torch.squeeze(_complex[i] * pro[i] * E_mode[i, :, :]) + E_output
-
-    E_output = E_output / torch.sqrt(
-        torch.sum(
-            torch.pow(torch.abs(E_output), 2)))
-
-    I_output = torch.pow(torch.abs(E_output), 2).cpu()
-
-    torch.save({
-        'a': _a,
-        'fhi': _fhi,
-        'E_output': E_output,
-    }, f'./data_1/doc/epoch_{epoch}_data.pth')
-
-    plt.figure()
-    plt.axis('off')
-    plt.imshow(I_output, cmap='jet')
-    plt.savefig(f'./data_1/img/epoch_{epoch}_output_img.png', bbox_inches='tight', pad_inches=0)
-    plt.close()
-
-    # return I_input.cpu(), I_output.cpu()
 
 
 def create_target(E_mode, mode_count, epoch=0, Nx=256, Ny=256):
@@ -117,31 +88,28 @@ def spgd_data_img_generate(pro, pro_r, E_mode, mode_count, epoch=0, Nx=256, Ny=2
         'a': _a,
         'fhi': _fhi,
         'E_output': E_output,
-    }, f'./data_2/doc/epoch_{epoch}_data.pth')
+    }, f'./data_spgd_only/doc/epoch_{epoch}_data.pth')
 
     plt.figure()
     plt.axis('off')
     plt.imshow(I_output, cmap='jet')
-    plt.savefig(f'./data_2/img/epoch_{epoch}_output_img.png', bbox_inches='tight', pad_inches=0)
+    plt.savefig(f'./data_spgd_only/img/epoch_{epoch}_output_img.png', bbox_inches='tight', pad_inches=0)
     plt.close()
 
 
 torch.set_default_device('cuda')
-init_data = torch.load('./data_1/init_data.pth', map_location=torch.device('cuda:0'))
+init_data = torch.load('./data_spgd_only/init_data.pth', map_location=torch.device('cuda:0'))
 
 pro_r = init_data['pro_r']
 pro = init_data['pro']
 E_mode = init_data['E_mode']
 mode_count = init_data['modeCount']
-epoch_num = 36000
+epoch_num = 24000
 
-for epoch in range(epoch_num):
+for epoch in range(0, epoch_num + 1):
     begin = time.time()
 
-    if epoch < 24000:
-        spgd_data_img_generate(pro, pro_r, E_mode, mode_count, epoch)
-    else:
-        random_data_img_generate(pro, E_mode, mode_count, epoch)
+    spgd_data_img_generate(pro, pro_r, E_mode, mode_count, epoch)
 
     end = time.time()
     if epoch % 500 == 0:

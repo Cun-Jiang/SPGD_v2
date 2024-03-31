@@ -43,27 +43,27 @@ def random_data_img_generate(pro, E_mode, mode_count, epoch=0, Nx=256, Ny=256):
         'a': _a,
         'fhi': _fhi,
         'E_output': E_output,
-    }, f'./data_1/doc/epoch_{epoch}_data.pth')
+    }, f'./data_random_only/doc/epoch_{epoch}_data.pth')
 
     plt.figure()
     plt.axis('off')
     plt.imshow(I_output, cmap='jet')
-    plt.savefig(f'./data_1/img/epoch_{epoch}_output_img.png', bbox_inches='tight', pad_inches=0)
+    plt.savefig(f'./data_random_only/img/epoch_{epoch}_output_img.png', bbox_inches='tight', pad_inches=0)
     plt.close()
 
     # return I_input.cpu(), I_output.cpu()
 
 
 torch.set_default_device('cuda')
-init_data = torch.load('./data_1/init_data.pth', map_location=torch.device('cuda:0'))
+init_data = torch.load('./data_random_only/init_data.pth', map_location=torch.device('cuda:0'))
 
 pro_r = init_data['pro_r']
 pro = init_data['pro']
 E_mode = init_data['E_mode']
 mode_count = init_data['modeCount']
-epoch_num = 36000
-
-for epoch in range(epoch_num):
+epoch_num = 24000
+random_num = 200000
+for epoch in range(epoch_num + 1, epoch_num + 1 + random_num):
     begin = time.time()
 
     random_data_img_generate(pro, E_mode, mode_count, epoch)

@@ -117,12 +117,12 @@ def spgd_data_img_generate(pro, pro_r, E_mode, mode_count, epoch=0, Nx=256, Ny=2
         'a': _a,
         'fhi': _fhi,
         'E_output': E_output,
-    }, f'./data_2/doc/epoch_{epoch}_data.pth')
+    }, f'./data_1/doc/epoch_{epoch}_data.pth')
 
     plt.figure()
     plt.axis('off')
     plt.imshow(I_output, cmap='jet')
-    plt.savefig(f'./data_2/img/epoch_{epoch}_output_img.png', bbox_inches='tight', pad_inches=0)
+    plt.savefig(f'./data_1/img/epoch_{epoch}_output_img.png', bbox_inches='tight', pad_inches=0)
     plt.close()
 
 
